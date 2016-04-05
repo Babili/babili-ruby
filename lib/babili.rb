@@ -1,0 +1,20 @@
+module Babili
+  def self.configure(&block)
+    yield @configuration ||= Babili::Configuration.new
+  end
+
+  def self.config
+    @configuration
+  end
+
+  def self.logger
+    @logger
+  end
+
+  configure do |config|
+    config.api_scheme = "https"
+    config.api_host   = "babili-api.spin42.me"
+    config.api_port   = 443
+  end
+end
+
