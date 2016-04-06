@@ -3,43 +3,47 @@ require "rest_client"
 
 module Babili
   class Client
-    def self.get(resource, data = {})
-      headers  = { params: data }.merge(headers)
-      response = RestClient.get(uri(resource), headers)
-      JSON.parse(response)
+    def self.get(path, query_params = {})
+      execute(:get, uri(path), headers, query_params)
     end
 
-    def self.post(resource, data)
-      data = data ? data.to_json : nil
-      response = RestClient.post(uri(resource), data, headers)
-      JSON.parse(response)
+    def self.post(path, payload)
+      execute(:post, uri(path), headers, nil, payload)
     end
 
-    def self.put(resource, data)
-      data = data ? data.to_json : nil
-      response = RestClient.put(uri(resource), data, headers)
-      JSON.parse(response)
+    def self.put(path, data)
+      execute(:put, uri(path), headers, nil, payload)
     end
 
-    def self.delete(resource, data = {})
-      headers  = { params: data }.merge(headers)
-      response = RestClient.delete(uri(resource), headers)
-      JSON.parse(response)
+    def self.delete(path, query_params = {})
+      execute(:delete, uri(path), headers, query_params)
     end
 
     private
 
-    def self.uri(resource)
+    def self.execute(method, url, headers, query_params = {}, payload = nil)
+      query = {
+        method:  method,
+        url:     url,
+        headers: {params: query_params},
+        payload: payload
+      }
+
+      raw_response = RestClient::Request.execute(query)
+      JSON.parse(raw_response)
+    end
+
+    def self.uri(path)
       base_url = "#{Babili.config.api_scheme}://#{Babili.config.api_host}:#{Babili.config.api_port}"
-      URI.join(base_url, resource).to_s
+      URI.join(base_url, path).to_s
     end
 
     def self.headers
+      if !Babili.config.token
+        raise TokenMissingError.new("You must define an authentication token before calling the API.")
+      end
       {
-        content_type: :json,
-        accept:       :json,
-        api_key:      Babili.config.api_key,
-        api_secret:   Babili.config.api_secret
+        authorization: "Bearer #{Babili.config.token}"
       }
     end
   end

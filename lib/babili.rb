@@ -1,3 +1,10 @@
+require "ostruct"
+
+require_relative "babili/client"
+require_relative "babili/configuration"
+require_relative "babili/errors"
+require_relative "babili/platform/user"
+
 module Babili
   def self.configure(&block)
     yield @configuration ||= Babili::Configuration.new

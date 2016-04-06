@@ -5,7 +5,7 @@ require 'babili/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "babili"
-  spec.version       = CommonAuth::VERSION
+  spec.version       = Babili::VERSION
   spec.authors       = ["Spin42"]
   spec.email         = ["info@spin42.com"]
   spec.summary       = "Babili Ruby Client"
@@ -19,4 +19,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "rest-client", "1.8.0"
+  spec.add_development_dependency "rspec", "3.4.0"
+  spec.add_development_dependency "webmock", "1.24.2"
 end
