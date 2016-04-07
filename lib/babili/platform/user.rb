@@ -11,6 +11,13 @@ module Babili
           user
         end
       end
+
+      def self.create(params = {})
+        raw_user = Babili::Client.post(@path, params)["data"]
+        user     = self.new(raw_user["attributes"])
+        user.id  = raw_user["id"]
+        user
+      end
     end
   end
 end

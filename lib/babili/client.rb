@@ -7,11 +7,11 @@ module Babili
       execute(:get, uri(path), headers, query_params)
     end
 
-    def self.post(path, payload)
+    def self.post(path, payload, query_params = {})
       execute(:post, uri(path), headers, nil, payload)
     end
 
-    def self.put(path, data)
+    def self.put(path, payload, query_params = {})
       execute(:put, uri(path), headers, nil, payload)
     end
 
@@ -25,7 +25,7 @@ module Babili
       query = {
         method:  method,
         url:     url,
-        headers: {params: query_params},
+        headers: {params: query_params}.merge(headers),
         payload: payload
       }
 
