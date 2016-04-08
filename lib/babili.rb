@@ -4,6 +4,7 @@ require_relative "babili/client"
 require_relative "babili/configuration"
 require_relative "babili/errors"
 require_relative "babili/platform/user"
+require_relative "babili/platform/room"
 require_relative "babili/platform/token"
 
 module Babili
