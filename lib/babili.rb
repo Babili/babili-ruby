@@ -6,6 +6,7 @@ require_relative "babili/errors"
 require_relative "babili/platform/user"
 require_relative "babili/platform/room"
 require_relative "babili/platform/message"
+require_relative "babili/platform/membership"
 require_relative "babili/platform/token"
 
 module Babili
