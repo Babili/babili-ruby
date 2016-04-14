@@ -13,6 +13,11 @@ module Babili
       end
 
       def self.create(params = {})
+        params = {
+          data: {
+            id: params[:id] || params["id"]
+          }
+        }
         raw_room = Babili::Client.post(path, params)["data"]
         room     = self.new(raw_room["attributes"])
         room.id  = raw_room["id"]

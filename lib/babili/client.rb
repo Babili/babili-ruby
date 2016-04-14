@@ -25,7 +25,7 @@ module Babili
       query = {
         method:  method,
         url:     url,
-        headers: {params: query_params}.merge(headers),
+        headers: { params: query_params }.merge(headers),
         payload: payload
       }
 
@@ -39,11 +39,11 @@ module Babili
     end
 
     def self.headers
-      if !Babili.config.token
-        raise TokenMissingError.new("You must define an authentication token before calling the API.")
+      if !Babili.config.platform_token
+        raise TokenMissingError.new("You must define an platform token before calling the API.")
       end
       {
-        authorization: "Bearer #{Babili.config.token}"
+        authorization: "Bearer #{Babili.config.platform_token}"
       }
     end
   end

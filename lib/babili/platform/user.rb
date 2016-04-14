@@ -13,6 +13,17 @@ module Babili
       end
 
       def self.create(params = {})
+        params = {
+          data: {
+            id:                           params ["id"] || params [:id]
+            alive_at:                     params ["alive_at"] || params [:alive_at]
+            status:                       params ["status"] || params [:status]
+            created_at:                   params ["created_at"] || params [:created_at]
+            updated_at:                   params ["updated_at"] || params [:updated_at]
+            last_messages_digest_sent_at: params ["last_messages_digest_sent_at"] || params [:last_messages_digest_sent_at]
+          }
+        }
+
         raw_user = Babili::Client.post(path, params)["data"]
         user     = self.new(raw_user["attributes"])
         user.id  = raw_user["id"]
