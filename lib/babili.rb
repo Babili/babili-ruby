@@ -29,4 +29,3 @@ module Babili
     config.api_port   = 443
   end
 end
-

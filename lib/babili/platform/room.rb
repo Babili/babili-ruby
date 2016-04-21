@@ -1,12 +1,14 @@
 module Babili
   module Platform
     class Room < OpenStruct
-      @@path = "platform/rooms"
+      def self.path
+        "platform/rooms"
+      end
 
       def self.all
         raw_rooms = Babili::Client.get(path)
         raw_rooms["data"].map do |raw_room|
-          room    = self.new(raw_room["attributes"])
+          room    = new(raw_room["attributes"])
           room.id = raw_room["id"]
           room
         end
@@ -15,11 +17,14 @@ module Babili
       def self.create(params = {})
         params = {
           data: {
-            id: params[:id] || params["id"]
+            id:         params[:id] || params["id"],
+            attributes: {
+              name: params[:name] || params[:name]
+            }
           }
         }
         raw_room = Babili::Client.post(path, params)["data"]
-        room     = self.new(raw_room["attributes"])
+        room     = new(raw_room["attributes"])
         room.id  = raw_room["id"]
         room
       end
@@ -27,7 +32,7 @@ module Babili
       def self.retreive(room_id)
         retreive_path = path + "/#{room_id}"
         raw_room      = Babili::Client.get(retreive_path)["data"]
-        room          = self.new(raw_room["attributes"])
+        room          = new(raw_room["attributes"])
         room.id       = raw_room["id"]
         room
       end
@@ -49,13 +54,6 @@ module Babili
           user
         end
       end
-
-      private
-
-      def self.path
-        @@path
-      end
-
     end
   end
 end

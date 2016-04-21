@@ -1,14 +1,33 @@
 module Babili
   module Platform
     class Message < OpenStruct
-      attr_accessor :room_id
-
-      @@path = "platform/rooms/:room_id/messages"
+      def self.path
+        "platform/rooms/:room_id/messages"
+      end
 
       def self.create(params = {})
-        room_id         = params.delete(:room_id)
-        create_path     = path.gsub(":room_id", room_id)
-        raw_message     = Babili::Client.post(create_path, params)["data"]
+        room_id          = params.delete(:room_id)
+        create_path      = path.gsub(":room_id", room_id)
+        formatted_params = {
+          data: {
+            type:          "mesage",
+            id:            params[:id] || params["id"],
+            relationships: {},
+            attributes:    {
+              content:          params[:content] || params["content"],
+              content_type:     params[:content_type] || params["content_type"],
+              read_by_user_ids: params[:read_by_user_ids] || params["read_by_user_ids"]
+            }
+          }
+        }
+        if formatted_params["user"]
+          formatted_params[:relationships][:user] = {
+            data: {
+              id: params[:id] || params["id"]
+            }
+          }
+        end
+        raw_message     = Babili::Client.post(create_path, formatted_params)["data"]
         message         = new(raw_message["attributes"])
         message.id      = raw_message["id"]
         message.room_id = room_id
@@ -16,18 +35,11 @@ module Babili
       end
 
       def delete
-        path            = self.class.path.gsub(":room_id", @room_id) + "/#{id}"
-        raw_message     = Babili::Client.delete(path)["data"]
-        message         = self.class.new(raw_message["attributes"])
-        message.id      = raw_message["id"]
-        message.room_id = raw_message["attributes"]["roomId"]
+        path        = self.class.path.gsub(":room_id", room_id) + "/#{id}"
+        raw_message = Babili::Client.delete(path)["data"]
+        message     = self.class.new(raw_message["attributes"])
+        message.id  = raw_message["id"]
         message
-      end
-
-      private
-
-      def self.path
-        @@path
       end
     end
   end
