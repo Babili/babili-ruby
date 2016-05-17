@@ -15,15 +15,21 @@ module Babili
       end
 
       def self.create(params = {})
-        params = {
+        formatted_params = {
           data: {
             id:         params[:id] || params["id"],
             attributes: {
               name: params[:name] || params[:name]
-            }
+            },
+            relationships: {}
           }
         }
-        raw_room = Babili::Client.post(path, params)["data"]
+        if params["user_ids"] || params[:user_ids]
+          formatted_params[:relationships][:users] = params[:user_ids].map do |user_id|
+            { id: user_id }
+          end
+        end
+        raw_room = Babili::Client.post(path, formatted_params)["data"]
         room     = new(raw_room["attributes"])
         room.id  = raw_room["id"]
         room
