@@ -15,17 +15,18 @@ module Babili
       end
 
       def self.create(params = {})
+        user_ids         = params[:user_ids] || params["user_ids"]
         formatted_params = {
           data: {
             id:         params[:id] || params["id"],
             attributes: {
-              name: params[:name] || params[:name]
+              name: params[:name] || params["name"]
             },
             relationships: {}
           }
         }
-        if params["user_ids"] || params[:user_ids]
-          formatted_params[:relationships][:users] = params[:user_ids].map do |user_id|
+        if user_ids
+          formatted_params[:relationships][:users] = user_ids.map do |user_id|
             { id: user_id }
           end
         end
