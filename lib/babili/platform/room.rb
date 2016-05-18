@@ -6,11 +6,24 @@ module Babili
       end
 
       def self.all
-        raw_rooms = Babili::Client.get(path)
-        raw_rooms["data"].map do |raw_room|
-          room    = new(raw_room["attributes"])
-          room.id = raw_room["id"]
-          room
+        rooms                       = []
+        previous_first_seen_room_id = false
+        first_seen_room_id          = nil
+        while previous_first_seen_room_id != first_seen_room_id
+          previous_first_seen_room_id = first_seen_room_id
+          if first_seen_room_id
+            raw_rooms = Babili::Client.get(path + "?firstSeenRoomId=#{first_seen_room_id}")
+          else
+            raw_rooms = Babili::Client.get(path)
+          end
+
+          return rooms if raw_rooms["data"].empty?
+          rooms.concat(raw_rooms["data"].map do |raw_room|
+            room    = new(raw_room["attributes"])
+            room.id = raw_room["id"]
+            room
+          end)
+          first_seen_room_id = raw_rooms["data"].last["id"]
         end
       end
 
