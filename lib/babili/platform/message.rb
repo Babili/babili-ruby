@@ -22,7 +22,7 @@ module Babili
           }
         }
         if sender_id
-          formatted_params[:relationships][:user] = {
+          formatted_params[:data][:relationships][:user] = {
             data: { id: sender_id }
           }
         end

@@ -35,14 +35,17 @@ module Babili
             attributes: {
               name: params[:name] || params["name"]
             },
-            relationships: {}
+            relationships: {
+              users: {}
+            }
           }
         }
         if user_ids
-          formatted_params[:relationships][:users] = user_ids.map do |user_id|
+          formatted_params[:data][:relationships][:users][:data] = user_ids.map do |user_id|
             { id: user_id }
           end
         end
+        p formatted_params
         raw_room = Babili::Client.post(path, formatted_params)["data"]
         room     = new(raw_room["attributes"])
         room.id  = raw_room["id"]
