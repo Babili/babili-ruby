@@ -45,7 +45,6 @@ module Babili
             { id: user_id }
           end
         end
-        p formatted_params
         raw_room = Babili::Client.post(path, formatted_params)["data"]
         room     = new(raw_room["attributes"])
         room.id  = raw_room["id"]

@@ -26,7 +26,7 @@ module Babili
         method:  method,
         url:     url,
         headers: { params: query_params }.merge(headers),
-        payload: payload
+        payload: payload ? payload.to_json : nil
       }
 
       raw_response = RestClient::Request.execute(query)
@@ -43,7 +43,9 @@ module Babili
         raise TokenMissingError.new("You must define an platform token before calling the API.")
       end
       {
-        authorization: "Bearer #{Babili.config.platform_token}"
+        authorization: "Bearer #{Babili.config.platform_token}",
+        content_type:  :json,
+        accept:        :json
       }
     end
   end
