@@ -8,7 +8,7 @@ module Babili
       def self.create(params = {})
         room_id          = params.delete(:room_id)
         create_path      = path.gsub(":room_id", room_id)
-        sender_id        = params[:sender_id] || params("sender_id")
+        sender_id        = params[:sender_id] || params["sender_id"]
         formatted_params = {
           data: {
             type:          "mesage",
