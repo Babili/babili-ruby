@@ -5,6 +5,29 @@ module Babili
         "platform/rooms/:room_id/messages"
       end
 
+      def self.all_for_room(room_id)
+        create_path                    = path.gsub(":room_id", room_id)
+        messages                       = []
+        previous_first_seen_message_id = false
+        first_seen_message_id          = nil
+        while previous_first_seen_message_id != first_seen_message_id
+          previous_first_seen_message_id = first_seen_message_id
+          if first_seen_message_id
+            raw_messages = Babili::Client.get(create_path + "?firstSeenMessageId=#{first_seen_message_id}")
+          else
+            raw_messages = Babili::Client.get(create_path)
+          end
+
+          return messages if raw_messages["data"].empty?
+          messages.concat(raw_messages["data"].map do |raw_message|
+            message    = new(raw_message["attributes"])
+            message.id = raw_message["id"]
+            message
+          end)
+          first_seen_message_id = raw_messages["data"].first["id"]
+        end
+      end
+
       def self.create(params = {})
         room_id          = params.delete(:room_id)
         create_path      = path.gsub(":room_id", room_id)

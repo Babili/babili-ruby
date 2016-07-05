@@ -21,6 +21,10 @@ module Babili
           rooms.concat(raw_rooms["data"].map do |raw_room|
             room    = new(raw_room["attributes"])
             room.id = raw_room["id"]
+            room.users = raw_room["relationships"]["users"]["data"].map do |raw_user|
+              user = Babili::Platform::User.new({id: raw_user["id"]})
+              user
+            end
             room
           end)
           first_seen_room_id = raw_rooms["data"].last["id"]
@@ -59,22 +63,16 @@ module Babili
         room
       end
 
+      def messages
+        Babili::Platform::Message.all_for_room(self.id)
+      end
+
       def delete
         path     = self.class.path + "/#{id}"
         raw_room = Babili::Client.delete(path)["data"]
         room     = self.class.new(raw_room["attributes"])
         room.id  = raw_room["id"]
         room
-      end
-
-      def users
-        path      = self.class.path + "/#{id}/users"
-        raw_users = Babili::Client.get(path)
-        raw_users["data"].map do |raw_user|
-          user    = Babili::Platform::User.new(raw_user["attributes"])
-          user.id = raw_user["id"]
-          user
-        end
       end
     end
   end
