@@ -1,8 +1,6 @@
 module Babili
   module Platform
     class Membership < OpenStruct
-      attr_accessor :room_id
-      attr_accessor :user_id
 
       def self.path
         "platform/rooms/:room_id/users/:user_id/membership"
