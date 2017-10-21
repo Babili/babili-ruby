@@ -26,7 +26,8 @@ module Babili
         method:  method,
         url:     url,
         headers: { params: query_params }.merge(headers),
-        payload: payload ? payload.to_json : nil
+        payload: payload ? payload.to_json : nil,
+        open_timeout: 5
       }
 
       raw_response = RestClient::Request.execute(query)
